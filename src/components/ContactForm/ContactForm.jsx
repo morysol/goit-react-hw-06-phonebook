@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import * as contactsActions from '../../redux/store';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 
@@ -11,16 +13,21 @@ const ContactForm = ({ onSubmitContactForm }) => {
   const inputName = nanoid();
   const inputNumber = nanoid();
 
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+
   const handleChange = event => {
+    const { name, value } = event.target;
     // console.log([event.target.name]);
     // console.log(event.target.name);
     // this.setState({ [event.target.name]: event.target.value });
-    switch (event.target.name) {
+    switch (name) {
       case 'name':
-        setName(event.target.value);
+        setName(value);
+
         break;
       case 'number':
-        setNumber(event.target.value);
+        setNumber(value);
         break;
 
       default:
@@ -38,6 +45,15 @@ const ContactForm = ({ onSubmitContactForm }) => {
       number,
     });
 
+    // console.log(contacts);
+    // console.log(contacts.items);
+    console.log('  contacts ', contacts);
+    console.log('  items ', contacts.items);
+    // const id = ''.concat(name, number);
+    // dispatch(
+    //   contactsActions.addContact([...contacts.items, { id, name, number }])
+    // );
+    dispatch(contactsActions.addContact({ id: name, name, number }));
     e.target.reset();
     setName('');
     setNumber('');
