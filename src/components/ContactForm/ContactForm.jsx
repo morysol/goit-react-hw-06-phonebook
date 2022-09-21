@@ -45,14 +45,9 @@ const ContactForm = ({ onSubmitContactForm }) => {
       number,
     });
 
-    // console.log(contacts);
-    // console.log(contacts.items);
     console.log('  contacts ', contacts);
     console.log('  items ', contacts.items);
-    // const id = ''.concat(name, number);
-    // dispatch(
-    //   contactsActions.addContact([...contacts.items, { id, name, number }])
-    // );
+
     dispatch(contactsActions.addContact({ id: name, name, number }));
     e.target.reset();
     setName('');

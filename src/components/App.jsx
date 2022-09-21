@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 
 //
 import { ContactsList } from './ContactsList/ContactsList';
@@ -50,7 +50,8 @@ export const App = () => {
       alert(` ${window.location.host} says: ${name}  is alredy in contacts.`);
       return;
     }
-    setContacts([...contacts, { id: nanoid(), name, number }]);
+    // setContacts([...contacts, { id: nanoid(), name, number }]);
+    setContacts([...contacts, { id: name, name, number }]);
   };
   const onFilterChange = e => {
     setFilter(e.target.value);

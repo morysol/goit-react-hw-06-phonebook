@@ -5,47 +5,55 @@ import {
   current,
 } from '@reduxjs/toolkit';
 
+import { load, save } from '../tools/storage/storage';
+
 // addContact
 // removeContact
+
+const localStorageContacts = load('contacts');
+
+//  =   localStorageContacts || defaulContacts
 
 export const addContact = createAction('contacts/addContact');
 export const removeContact = createAction('contacts/removeContact');
 const filterContact = createAction('contacts/filterContact');
 
 const initialContacts = {
-  items: [],
+  items: localStorageContacts || [
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ],
   filter: '',
 };
 const contacts = createReducer(initialContacts, {
+  //
   [addContact.type]: (state, action) => {
     console.log(' current ', current(state));
-    console.log(action.payload);
-    //  ...state, tasks: [...state.tasks, action.payload],
+    console.log('add  ', action.payload);
 
     return {
       ...state,
       items: [...state.items, action.payload],
     };
-
-    // return {
-    //   ...state,
-    //   contacts: {
-    //     ...state.contacts,
-    //     items: [...state.items, action.payload],
-    //   },
-    // };
-
-    // return { items: [...state.items, action.payload] };
-    // return {
-    // ...state, //  contacts {items: [],  filter: '' }
-    // {...contacts,  {items: [],  filter: '' } }
-    // ...state.contacts, [...state.contacts.items, action.payload]
-    // };
   },
 
-  [removeContact.type]: (state, action) =>
-    contacts.filter(contact => contact.items !== action.payload),
-  [filterContact.type]: (contacts, action) => action.payload,
+  [removeContact.type]: (state, action) => {
+    console.log(' current ', current(state));
+    console.log('remove', action.payload);
+    current(state).items.map(item => console.log(item.id === action.payload));
+    const items = current(state.items).filter(
+      item => item.id !== action.payload
+    );
+    console.log(items);
+    return {
+      ...state,
+      items: state.items.filter(item => item.id !== action.payload),
+    };
+  },
+  //   contacts.filter(contact => contact.items !== action.payload),
+  // [filterContact.type]: (contacts, action) => action.payload,
 });
 
 export const store = configureStore({
@@ -53,15 +61,6 @@ export const store = configureStore({
     contacts,
   },
 });
-
-// Пусть Redux-состояние выглядит следующим образом.
-
-// {
-//   contacts: {
-//     items: [],
-//     filter: ''
-//   }
-// }
 
 // + Создай хранилище с configureStore()
 // Создай действия сохранения и удаления контакта, а также обновления фильтра. Используй функцию createAction().
