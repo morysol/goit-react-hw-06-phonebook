@@ -1,32 +1,19 @@
-import { useState, useEffect } from 'react';
-// import { nanoid } from 'nanoid';
-
+import { useSelector, useDispatch } from 'react-redux';
 //
 import { ContactsList } from './ContactsList/ContactsList';
 import ContactForm from './ContactForm/ContactForm';
 import { SearchFilter } from './SearchFilter/SearchFilter';
-
-import { defaulContacts } from '../tools/defaultContacts';
+import { updateFilter } from '../redux/store';
 //
+import { addContact } from '../redux/store';
 
-//
-import { load, save } from '../tools/storage/storage';
 import { Container } from './App.styled';
 
 export const App = () => {
-  const localStorageContacts = load('contacts');
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.contacts.filter);
 
-  const [contacts, setContacts] = useState(
-    localStorageContacts || defaulContacts
-  );
-
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    // console.log(contacts);
-    // console.log(`!!!!!   SAVING CONTACTS !!!!!`);
-    save('contacts', contacts);
-  }, [contacts]);
+  const dispatch = useDispatch();
 
   const isContactExists = (list, value) => {
     let state = false;
@@ -45,16 +32,11 @@ export const App = () => {
       alert(` ${window.location.host} says: ${name}  is alredy in contacts.`);
       return;
     }
-    // setContacts([...contacts, { id: nanoid(), name, number }]);
-    setContacts([...contacts, { id: name, name, number }]);
+
+    dispatch(addContact({ id: name, name, number }));
   };
   const onFilterChange = e => {
-    setFilter(e.target.value);
-    // add redux
-  };
-  const onDeleteContact = id => {
-    const newContacts = contacts.filter(contact => contact.id !== id);
-    setContacts(newContacts);
+    dispatch(updateFilter(e.target.value));
   };
 
   return (
@@ -66,12 +48,7 @@ export const App = () => {
         onFilterChange={onFilterChange}
         filter={filter}
       ></SearchFilter>
-      <ContactsList
-        filteredContacts={contacts.filter(contact =>
-          contact.name.toLowerCase().includes(filter.toLowerCase())
-        )}
-        removeContact={onDeleteContact}
-      ></ContactsList>
+      <ContactsList></ContactsList>
     </Container>
   );
 };

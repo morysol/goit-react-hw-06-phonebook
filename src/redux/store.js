@@ -1,15 +1,9 @@
-import {
-  configureStore,
-  createAction,
-  createReducer,
-  current,
-} from '@reduxjs/toolkit';
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+
+// import { current } from '@reduxjs/toolkit';
 
 import { load } from '../tools/storage/storage';
 import { defaulContacts } from '../tools/defaultContacts';
-
-// addContact
-// removeContact
 
 const localStorageContacts = load('contacts');
 
@@ -17,7 +11,7 @@ const localStorageContacts = load('contacts');
 
 export const addContact = createAction('contacts/addContact');
 export const removeContact = createAction('contacts/removeContact');
-const filterContact = createAction('contacts/filterContact');
+export const updateFilter = createAction('filter/updateFilter');
 
 const initialContacts = {
   items: localStorageContacts || defaulContacts,
@@ -25,9 +19,9 @@ const initialContacts = {
 };
 const contacts = createReducer(initialContacts, {
   //
-  [addContact.type]: (state, action) => {
+  [addContact]: (state, action) => {
     // console.log(' current ', current(state));
-    // console.log('add  ', action.payload);
+    // console.log('addContact  ', action.payload);
 
     return {
       ...state,
@@ -35,10 +29,10 @@ const contacts = createReducer(initialContacts, {
     };
   },
 
-  [removeContact.type]: (state, action) => {
+  [removeContact]: (state, action) => {
     // console.log(' current ', current(state));
-    // console.log('remove', action.payload);
-    current(state).items.map(item => console.log(item.id === action.payload));
+    // console.log('removeContact', action.payload);
+    // current(state).items.map(item => console.log(item.id === action.payload));
     // const items = current(state.items).filter(
     //   item => item.id !== action.payload
     // );
@@ -48,14 +42,14 @@ const contacts = createReducer(initialContacts, {
       items: state.items.filter(item => item.id !== action.payload),
     };
   },
-  [filterContact.type]: (state, action) => {
-    return {
-      ...state,
-      filter: state.filter,
-    };
+  [updateFilter]: (state, action) => {
+    // return {
+    //   ...state,
+    //   filter: action.payload,
+    // };
+    // console.log(action.payload);
+    state.filter = action.payload;
   },
-  //   contacts.filter(contact => contact.items !== action.payload),
-  // [filterContact.type]: (contacts, action) => action.payload,
 });
 
 export const store = configureStore({

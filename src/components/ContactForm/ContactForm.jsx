@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import * as contactsActions from '../../redux/store';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 
@@ -10,8 +9,7 @@ import { save } from '../../tools/storage/storage';
 import { AddButton, InputField, Form } from '../ContactForm/ContactForm.styled';
 
 function useContacts() {
-  const contacts = useSelector(state => state.contacts);
-  return contacts;
+  return useSelector(state => state.contacts.items);
 }
 
 const ContactForm = ({ onSubmitContactForm }) => {
@@ -21,16 +19,11 @@ const ContactForm = ({ onSubmitContactForm }) => {
   const inputName = nanoid();
   const inputNumber = nanoid();
 
-  const dispatch = useDispatch();
-  // const contacts = useSelector(state => state.contacts);
   const contacts = useContacts();
-  console.log(contacts);
 
   const handleChange = event => {
     const { name, value } = event.target;
-    // console.log([event.target.name]);
-    // console.log(event.target.name);
-    // this.setState({ [event.target.name]: event.target.value });
+
     switch (name) {
       case 'name':
         setName(value);
@@ -55,12 +48,6 @@ const ContactForm = ({ onSubmitContactForm }) => {
       number,
     });
 
-    console.log('  contacts ', contacts);
-    console.log('  items ', contacts.items);
-
-    dispatch(contactsActions.addContact({ id: name, name, number }));
-    // save new contacts to local store
-    console.log('saving new contacts', contacts);
     save('contacts', contacts);
     e.target.reset();
     setName('');
