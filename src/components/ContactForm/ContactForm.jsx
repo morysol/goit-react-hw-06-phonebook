@@ -4,7 +4,15 @@ import * as contactsActions from '../../redux/store';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 
+//
+import { save } from '../../tools/storage/storage';
+
 import { AddButton, InputField, Form } from '../ContactForm/ContactForm.styled';
+
+function useContacts() {
+  const contacts = useSelector(state => state.contacts);
+  return contacts;
+}
 
 const ContactForm = ({ onSubmitContactForm }) => {
   const [name, setName] = useState('');
@@ -14,7 +22,9 @@ const ContactForm = ({ onSubmitContactForm }) => {
   const inputNumber = nanoid();
 
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
+  // const contacts = useSelector(state => state.contacts);
+  const contacts = useContacts();
+  console.log(contacts);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -49,6 +59,9 @@ const ContactForm = ({ onSubmitContactForm }) => {
     console.log('  items ', contacts.items);
 
     dispatch(contactsActions.addContact({ id: name, name, number }));
+    // save new contacts to local store
+    console.log('saving new contacts', contacts);
+    save('contacts', contacts);
     e.target.reset();
     setName('');
     setNumber('');
