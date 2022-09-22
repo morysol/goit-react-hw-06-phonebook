@@ -48,6 +48,12 @@ const contacts = createReducer(initialContacts, {
       items: state.items.filter(item => item.id !== action.payload),
     };
   },
+  [filterContact.type]: (state, action) => {
+    return {
+      ...state,
+      filter: state.filter,
+    };
+  },
   //   contacts.filter(contact => contact.items !== action.payload),
   // [filterContact.type]: (contacts, action) => action.payload,
 });
