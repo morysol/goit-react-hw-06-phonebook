@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as contactsActions from '../../redux/store';
 //
 import { BtnDelete } from './ContactsListItem.styled';
