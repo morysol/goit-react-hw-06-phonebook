@@ -1,28 +1,22 @@
 import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
 
-// import { current } from '@reduxjs/toolkit';
+// import { load } from '../tools/storage/storage';
+import { defaultContacts } from '../tools/defaultContacts';
 
-import { load } from '../tools/storage/storage';
-import { defaulContacts } from '../tools/defaultContacts';
-
-const localStorageContacts = load('contacts');
-
-//  =   localStorageContacts || defaulContacts
+// const localStorageContacts = load('contacts');
 
 export const addContact = createAction('contacts/addContact');
 export const removeContact = createAction('contacts/removeContact');
 export const updateFilter = createAction('filter/updateFilter');
 
 const initialContacts = {
-  items: localStorageContacts || defaulContacts,
+  // items: localStorageContacts || defaulContacts,
+  items: defaultContacts,
   filter: '',
 };
 const contacts = createReducer(initialContacts, {
   //
   [addContact]: (state, action) => {
-    // console.log(' current ', current(state));
-    // console.log('addContact  ', action.payload);
-
     return {
       ...state,
       items: [...state.items, action.payload],
@@ -30,24 +24,12 @@ const contacts = createReducer(initialContacts, {
   },
 
   [removeContact]: (state, action) => {
-    // console.log(' current ', current(state));
-    // console.log('removeContact', action.payload);
-    // current(state).items.map(item => console.log(item.id === action.payload));
-    // const items = current(state.items).filter(
-    //   item => item.id !== action.payload
-    // );
-    // console.log(items);
     return {
       ...state,
       items: state.items.filter(item => item.id !== action.payload),
     };
   },
   [updateFilter]: (state, action) => {
-    // return {
-    //   ...state,
-    //   filter: action.payload,
-    // };
-    // console.log(action.payload);
     state.filter = action.payload;
   },
 });

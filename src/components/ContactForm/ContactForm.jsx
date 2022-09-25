@@ -1,25 +1,44 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
 
 //
-import { save } from '../../tools/storage/storage';
+// import { save } from '../../tools/storage/storage';
+import { addContact } from '../../redux/store';
 
 import { AddButton, InputField, Form } from '../ContactForm/ContactForm.styled';
 
-function useContacts() {
-  return useSelector(state => state.contacts.items);
-}
-
-const ContactForm = ({ onSubmitContactForm }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const inputName = nanoid();
   const inputNumber = nanoid();
 
-  const contacts = useContacts();
+  const contacts = useSelector(state => state.contacts.items);
+
+  const dispatch = useDispatch();
+
+  const isContactExists = (list, value) => {
+    let state = false;
+    list.forEach(item => {
+      if (item.name === value) {
+        state = true;
+      }
+    });
+    return state;
+  };
+
+  const formSubmitedContacts = ({ name, number }) => {
+    const ifExist = isContactExists(contacts, name);
+
+    if (ifExist) {
+      alert(` ${window.location.host} says: ${name}  is alredy in contacts.`);
+      return;
+    }
+
+    dispatch(addContact({ id: name, name, number }));
+  };
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -43,12 +62,12 @@ const ContactForm = ({ onSubmitContactForm }) => {
     const name = e.target.name.value;
     const number = e.target.number.value;
 
-    onSubmitContactForm({
+    formSubmitedContacts({
       name,
       number,
     });
 
-    save('contacts', contacts);
+    // save('contacts', contacts);
     e.target.reset();
     setName('');
     setNumber('');
@@ -83,7 +102,5 @@ const ContactForm = ({ onSubmitContactForm }) => {
     </Form>
   );
 };
-
-ContactForm.propTypes = { onSubmitContactForm: PropTypes.func.isRequired };
 
 export default ContactForm;
