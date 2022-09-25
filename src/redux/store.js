@@ -1,7 +1,24 @@
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  createAction,
+  createReducer,
+  combineReducers,
+} from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+
+import { defaultContacts } from '../tools/defaultContacts';
 
 // import { load } from '../tools/storage/storage';
-import { defaultContacts } from '../tools/defaultContacts';
 
 // const localStorageContacts = load('contacts');
 
@@ -34,13 +51,29 @@ const contacts = createReducer(initialContacts, {
   },
 });
 
+// export const store = configureStore({
+//   reducer: {
+//     contacts,
+//   },
+// });
+
+const rootReducer = combineReducers({ contacts });
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 export const store = configureStore({
-  reducer: {
-    contacts,
-  },
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-// + Создай хранилище с configureStore()
-// Создай действия сохранения и удаления контакта, а также обновления фильтра. Используй функцию createAction().
-// Создай редюсеры контактов и фильтра. Используй функцию createReducer() или createSlice().
-// Свяжи React-компоненты с Redux-логикой при помощи хуков бибилиотеки react-redux.
+export const persistore = persistStore(store);
